@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Prototype </title>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<h1> StudentPrototype </h1>
+		
+		<script>
+	
+			function Student (name, surname, male, bday, arrating) {
+				this.name = name;
+				this.surname = surname;
+				this.male = male || 'It';
+				this.bday = bday || '30.09.1996';
+				this.rating = arrating || [];
+				this.rating.length = 30;
+				this.attendance = [];
+				this.attendance.length = 30;
+			}
+
+		
+
+			Student.prototype.getfullName = function () { return this.name + '  ' + this.surname}
+		
+			Student.prototype.getAgeStudent = function() {
+				let studentYearbirth = ((new Date).getFullYear()) - (this.bday.split('.').find(item => item.length === 4));
+				return studentYearbirth;								
+			}
+	        			
+			Student.prototype.getAverageMark = function() {
+				let counter = 0;
+				let average = this.rating.reduce(function(summ, item) {
+					summ =	summ + item;
+					counter++;
+					return summ;
+				}, 0);
+				let averageMark = 0;
+				if (counter > 0) {
+					averageMark = average / counter;
+				}
+				return averageMark.toFixed(2);
+			}
+
+			Student.prototype.getAverageVisit = function() {
+				counter = 0;
+				let visit = this.attendance.filter(function (item) {
+				 	counter++;
+				 	if (item === true) return item;
+				});
+				 let averageVisit = 0;
+				 	if (counter > 0) averageVisit = visit.length / counter;
+				 	return  averageVisit;
+				}
+
+			Student.prototype.present = function() { 
+				let index = this.attendance.findIndex( (item) => typeof(item) != 'boolean');
+				 return this.attendance.splice(index,1,true);
+			}		
+  						
+			Student.prototype.absent = function() { 
+				return this.attendance.splice((this.attendance.findIndex( (item) => typeof(item) != 'boolean')),1,false);
+			}	
+
+			Student.prototype.mark = function(value) { 
+				return this.rating.splice((this.rating.findIndex( (item) => typeof(item) != 'number')),1,
+					value);
+			}
+
+			Student.prototype.summary = function () {
+				let message;
+				if (this.getAverageMark() > 9 && this.getAverageVisit() > 0.9 ){
+					message = 'Ути какой молодчинка!';
+				}
+				if (this.getAverageMark() < 9 || this.getAverageVisit() < 0.9 ){
+					message = 'Норм, но можно лучше';
+				}
+				if (this.getAverageMark() < 9 && this.getAverageVisit() < 0.9 ){
+					message = 'Rediska!';
+				}
+				return message;
+			}
+
+			Object.seal(Student.rating);
+			Object.seal(Student.attendance);
+			let student1 = new Student( 'Dmitry', 'Petrov', 'man', '27.05.1976', [2, 3, 4, 5, 2, 5, 5, 1, 2, 2]);
+			console.log(student1);
+			let student2 = new Student( 'Makar', 'Ivanov');
+			console.log(student2);
+			let student3 = new Student( 'Oleg', 'Ivanov', 'man', '17.05.1996', [10, 10, 10, 10, 10, 10, 10, 1, 2, 2]);
+
+			console.log(student1.getAgeStudent());	
+			console.log(student2.getAgeStudent());	
+			console.log(student1.getAverageMark());
+			console.log(student2.getAverageMark());
+			console.log('Возраст студента', student1.getfullName(), ' = ',student1.getAgeStudent());
+			console.log('Средний балл студента ', student1.getfullName(), ' = ',student1.getAverageMark());
+            student1.present();
+			student1.present();
+			student1.present();
+
+			
+			student1.absent();
+			student1.mark(3);
+			console.log(student1);
+			console.log('Возраст студента', student1.getfullName(), ' = ',student1.getAgeStudent());
+			console.log('Средний балл студента ', student1.getfullName(), ' = ',student1.getAverageMark());
+            student2.mark(5);
+            console.log('Возраст студента', student2.getfullName(), ' = ',student2.getAgeStudent());
+			console.log('Средний балл студента ', student2.getfullName(), ' = ',student2.getAverageMark());
+ 			console.log('Средняя посещаемость = ', student1.getfullName(), ' = ',student1.getAverageVisit());
+ 			console.log('Суммарный результат = ', student1.summary());
+
+ 			student3.present();
+			student3.present();
+			student3.present(); 
+			student3.present();
+			student3.present();
+			student3.present();
+			console.log('Средний балл студента ', student3.getfullName(), ' = ',student3.getAverageMark());
+ 			console.log('Средняя посещаемость = ', student3.getfullName(), ' = ',student3.getAverageVisit());
+ 			console.log('Суммарный результат = ', student3.summary());
+ 			console.log(student3);
+		</script>
+	</body>
+</html>
